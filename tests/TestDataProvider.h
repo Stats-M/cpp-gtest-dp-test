@@ -9,7 +9,7 @@ struct TestData
 {
     std::string test_name;  // Имя конкретного набора данных (для читабельности ошибок)
     std::vector<T> args;    // Вектор аргументов для тестируемой функции
-    T result;               // Ожидаемый результат
+    T expected_result;      // Ожидаемый результат
 };
 
 // Класс Data Provider'а
