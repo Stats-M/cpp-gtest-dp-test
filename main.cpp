@@ -1,7 +1,7 @@
-#include <gtest/gtest.h>
+#include <gtest/gtest.h>                // GoogleTest
 #include <iostream>
 
-#include "tests/test.h"
+#include "tests/test.h"                 // Наши тесты
 
 int main(int argc, char* argv[])
 {
