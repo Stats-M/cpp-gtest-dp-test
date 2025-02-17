@@ -3,12 +3,21 @@
 #include <vector>
 #include <string>
 
-// Шаблонная структура для хранения одного набора тестовых данных
+// Шаблонная структура для хранения одного набора тестовых данных в виде вектора
 template <typename T>
-struct TestData
+struct TestDatasetWithVector
 {
     std::string test_name;  // Имя конкретного набора данных (для читабельности ошибок)
-    std::vector<T> arg;     // Вектор аргументов для тестируемой функции
+    std::vector<T> args;    // Вектор аргументов для тестируемой функции
+    T expected_result;      // Ожидаемый результат
+};
+
+// Шаблонная структура для хранения одного набора тестовых данных
+template <typename T>
+struct TestDatasetWithScalar
+{
+    std::string test_name;  // Имя конкретного набора данных (для читабельности ошибок)
+    T arg;                  // Аргумент для тестируемой функции
     T expected_result;      // Ожидаемый результат
 };
 
@@ -16,7 +25,7 @@ struct TestData
 class DataProvider_GetSum
 {
 public:
-    static std::vector<TestData<int>> get_test_cases();
+    static std::vector<TestDatasetWithVector<int>> get_test_cases();
 private:
 };
 
@@ -24,6 +33,6 @@ private:
 class DataProvider_GetCube
 {
 public:
-    static double get_test_cases();
+    static std::vector<TestDatasetWithScalar<double>> get_test_cases();
 private:
 };
