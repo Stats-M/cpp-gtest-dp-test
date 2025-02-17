@@ -30,3 +30,32 @@
 *.exe
 *.out
 *.app
+
+# Executables VSCode compliles to
+hex-grid/main
+
+#Extra ignores
+/cmake-build-debug/
+/xsimd/*
+
+# Local files
+*.local
+.env
+.env.production
+
+# Logs
+logs
+*.log
+
+# Editor directories and files
+# .vscode/*
+.idea
+.vscode
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# ...but allow save of VS Code extensions list
+!.vscode/extensions.json
