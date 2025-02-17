@@ -1,7 +1,9 @@
 # Линкуем тесты как исполняемый файл (см. ../CMakeLists.txt)
 add_executable(runTests
         test.cpp
-        test.h)
+        test.h
+        TestDataProvider.cpp
+        TestDataProvider.h)
 
 # Линкуем библиотеку cpp-gtest-data-provider к исполняемому файлу runTests.
 # Это позволяет использовать функции, определённые в main.cpp в файле test.cpp.
