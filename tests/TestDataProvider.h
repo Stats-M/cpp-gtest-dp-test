@@ -1,8 +1,16 @@
 #pragma once
 
-#include "test.h"
-
 #include <vector>
+#include <string>
+
+// Шаблонная структура для хранения одного набора тестовых данных
+template <typename T>
+struct TestData
+{
+    std::string test_name;  // Имя конкретного набора данных (для читабельности ошибок)
+    std::vector<T> args;    // Вектор аргументов для тестируемой функции
+    T result;               // Ожидаемый результат
+};
 
 // Класс Data Provider'а
 class MyDataProvider

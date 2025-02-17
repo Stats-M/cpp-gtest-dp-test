@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/cube.h"          // Заголовочный файл с вашим кодом
+#include "../src/cube.h"          // Заголовочный файл с проверяемым кодом
 
 // Пример функции, которую тестируем (замените на вашу)
 //double get_sum(std::vector args);
