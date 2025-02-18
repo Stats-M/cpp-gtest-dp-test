@@ -38,6 +38,7 @@ class DataProvider_GetSum
 {
 public:
     static std::vector<TestDatasetWithVector<int>> get_test_cases();
+
 private:
 };
 
@@ -47,6 +48,7 @@ class DataProvider_GetCube
 {
 public:
     static std::vector<TestDatasetWithScalar<double>> get_test_cases();
+
 private:
 };
 
@@ -56,6 +58,7 @@ class DataProvider_GetPow2
 {
 public:
     static std::vector<TestDatasetWithScalar<double>> get_test_cases();
+
 private:
 };
 
