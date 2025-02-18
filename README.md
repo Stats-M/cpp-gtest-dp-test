@@ -1,5 +1,5 @@
 # cpp-gtest-dp-test
-## Test use of Data Providers within Google Test
+## Test use of Data Providers within Google Test. gcc g++12 required!
 
 Пробный проект использования пакета **Google Test (Test + Mock)**. Установка библиотеки производится в локальную build-директорию силами самого CMake полностью автоматически при загрузке проекта
 Обычно это _**<project_dir>/cmake-build-debug/_deps/googletest-src**_
@@ -12,6 +12,8 @@
 #### Стартовый файл для изучения - tests/test.cpp
 
     * -main.cpp                    - запуск проекта, инициализация Google Test
+    * -CMakeLists.txt              - основная конфигурация проекта, загрузка библиотеки, инициализация переменных среды
+    * -tests/CMakeLists.txt        - дополнительная конфигурация тестовой части проекта: таргеты, автопоиск тестов
     * -tests/test.h                - заголовки тестовых функций, классов, шаблонные реализации
     * -tests/test.cpp              - наборы тестов различной реализации для сравнения и выбора наиболее удобного или подробного из них
     * -tests/TestDataProvider.h    - шаблоны наборов тестовых данных, шаблоны или объявления data provider'ов
