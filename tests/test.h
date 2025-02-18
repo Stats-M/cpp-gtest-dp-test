@@ -6,8 +6,11 @@
 #include <string>
 #include <vector>
 
-// Пример шаблонной функции, которую тестируем
+// Фиксируем тип шаблонной функции, которую тестируем
 double get_sum(std::vector<int> args);
 
-// Пример обычной функции, которую тестируем
-double get_cube(double arg);
+// Обычная функция, которую тестируем. Уже объявлена в cube.h
+//double get_cube(double arg);
+
+// Обычная функция, которую тестируем. Уже объявлена в cube.h
+//double get_pow_2(double arg);

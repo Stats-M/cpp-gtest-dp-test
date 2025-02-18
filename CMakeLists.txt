@@ -1,14 +1,21 @@
 cmake_minimum_required(VERSION 3.28)
 project(cpp_gtest_data_provider VERSION 0.0.1)
 
+# Вычисляем разные полезные переменные
+set(USER_HOME_DIRECTORY $ENV{USERPROFILE})
+
 # Путь до библиотеки xsimd
-#set(USER_HOME_DIRECTORY $ENV{USERPROFILE})
 #set(XSIMD_INCLUDE_DIR "${USER_HOME_DIRECTORY}/projects/CppProjects/cpp-recall-molecular/xsimd")
 #include_directories(${XSIMD_INCLUDE_DIR})
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_COMPILER "/usr/bin/g++-12")
 #set(CMAKE_CXX_FLAGS "-mavx")   Включение SIMD (SSE) команд при использовании библиотеки xsimd
+
+# Будем использовать типы из библиотеки Eigen в тестах, потребуем ее наличия
+set(CMAKE_PREFIX_PATH "${USER_HOME_DIRECTORY}/projects/libs/eigen-3.4.0")
+set(Eigen3_DIR "${USER_HOME_DIRECTORY}/projects/libs/eigen-3.4.0/cmake")
+#find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
 # Включаем модуль FetchContent
 include(FetchContent)

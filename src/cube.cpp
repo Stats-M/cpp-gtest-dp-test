@@ -8,3 +8,8 @@ double get_cube(double arg)
 {
     return arg * arg * arg;
 }
+
+double get_pow_2(double arg)
+{
+    return arg * arg;
+}

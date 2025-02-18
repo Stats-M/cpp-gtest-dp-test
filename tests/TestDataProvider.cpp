@@ -107,3 +107,61 @@ std::vector<TestDatasetWithScalar<double>> DataProvider_GetCube::get_test_cases(
 
     return test_cases;
 }
+
+
+/**
+ * (static) Метод возвращает очередной набор данных для теста функции get_pow_2()
+ * @return double
+ */
+std::vector<TestDatasetWithScalar<double>> DataProvider_GetPow2::get_test_cases()
+{
+    std::vector<TestDatasetWithScalar<double>> test_cases;
+
+    // Пример 1: Положительное целое значение
+    test_cases.push_back({
+                                 "PositiveValue",       // Имя теста
+                                 4.0,                   // Исходные данные
+                                 16.0,                  // Ожидаемый результат
+                         });
+
+    // Пример 2: Отрицательное целое значение
+    test_cases.push_back({
+                                 "NegativeValue",       // Имя теста
+                                 -2,                    // Исходные данные
+                                 4,                     // Ожидаемый результат
+                         });
+
+    // Пример 3: Нулевое значение
+    test_cases.push_back({
+                                 "ZeroValue",           // Имя теста
+                                 0.0,                   // Исходные данные
+                                 0.0,                   // Ожидаемый результат
+                         });
+
+    // Пример 4: Положительное дробное значение
+    test_cases.push_back({
+                                 "PositiveFractionalValue",    // Имя теста
+                                 0.5,                          // Исходные данные
+                                 0.25,                         // Ожидаемый результат
+                         });
+
+    // Пример 5: Отрицательное дробное значение
+    test_cases.push_back({
+                                 "NegativeFractionalValue",    // Имя теста
+                                 -0.25,                        // Исходные данные
+                                 0.625,                        // Ожидаемый результат
+                         });
+
+    // Пример 6: Большое значение
+    test_cases.push_back({
+                                 "LargeValue",          // Имя теста
+                                 100.0,                 // Исходные данные
+                                 10000.0,               // Ожидаемый результат
+                         });
+
+    // Можно загружать данные из CSV-файла, JSON-файла, базы данных и т.д.
+    // Например, загрузка из CSV файла:
+    // load_data_from_csv("test_data.csv", test_cases);
+
+    return test_cases;
+}

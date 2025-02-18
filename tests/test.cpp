@@ -4,6 +4,7 @@
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Пример теста для функции, принимающей vector<int> в качестве аргумента:
 // связка class (фиксация типа) + TEST_P + INSTANTIATE_TEST_SUITE_P
+// РЕАЛИЗАЦИЯ: DataProvider + параметризованный тест (*_P)
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Параметризованный тестовый класс. Наследуется от ::testing::TestWithParam<TestDatasetWithVector>.
@@ -28,19 +29,20 @@ TEST_P(VectorCalculationTest, VectorIntSum) {
 //   * Четвертый аргумент (опционально) - функция, которая формирует имя теста на основе параметра.
 INSTANTIATE_TEST_SUITE_P(
         TestingFile_CubeCpp,                    // Префикс для имен тестов
-    VectorCalculationTest,                      // Имя тестового класса
-    ::testing::ValuesIn(DataProvider_GetSum::get_test_cases()),  // Набор данных
-    [](const ::testing::TestParamInfo<TestDatasetWithVector<int>>& info)
-        {
-            // Формируем имя для каждого набора данных теста (опционально, для лучшей читаемости)
-            return info.param.test_name;    // Используем имя из структуры TestDatasetWithVector
-        }
+        VectorCalculationTest,                  // Имя тестового класса
+        ::testing::ValuesIn(DataProvider_GetSum::get_test_cases()),  // Набор данных
+        [](const ::testing::TestParamInfo<TestDatasetWithVector<int>>& info)
+            {
+                // Формируем имя для каждого набора данных теста (опционально, для лучшей читаемости)
+                return info.param.test_name;    // Используем имя из структуры TestDatasetWithVector
+            }
                         );
 
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Пример теста для функции, принимающей скаляр double в качестве аргумента:
 // связка class (фиксация типа) + TEST_P + INSTANTIATE_TEST_SUITE_P
+// РЕАЛИЗАЦИЯ: DataProvider + параметризованный тест (*_P)
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Параметризованный тестовый класс. Наследуется от ::testing::TestWithParam<TestDatasetWithScalar>.
@@ -75,10 +77,32 @@ INSTANTIATE_TEST_SUITE_P(
                         );
 
 
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Пример теста для функции, принимающей скаляр double в качестве аргумента:
+// связка class (фиксация типа) + TEST_P + INSTANTIATE_TEST_SUITE_P
+// РЕАЛИЗАЦИЯ: DataProvider + НЕпараметризованный тест
+// Недостаток: данные из DP передаются в test_cases все и сразу
+// Достоинства: простота реализации
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Непараметризованый тест
+TEST(CalculationTest, ScalarPow2) {
+    auto test_cases = DataProvider_GetCube::get_test_cases();
+
+    for (const auto& data : test_cases)
+    {
+        double result = get_cube(data.arg);
+        ASSERT_NEAR(result, data.expected_result, 1e-6) << "Test Case: " << data.test_name;
+    }
+}
+
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Пример простых stand-alone тестов без использования DataProvider
 // Классические unit-тесты с генерацией тестовых кейсов на лету
+// РЕАЛИЗАЦИЯ: Локальные наборы тестовых данных
+// Недостаток: не используется DP
+// Достоинства: простейшая реализации
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Stand-alone тесты проверки базовой функциональности. Не связаны с DataProvider

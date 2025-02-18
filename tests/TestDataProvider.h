@@ -36,3 +36,11 @@ public:
     static std::vector<TestDatasetWithScalar<double>> get_test_cases();
 private:
 };
+
+// Класс Data Provider для функции get_pow_2
+class DataProvider_GetPow2
+{
+public:
+    static std::vector<TestDatasetWithScalar<double>> get_test_cases();
+private:
+};
