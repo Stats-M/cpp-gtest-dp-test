@@ -21,18 +21,21 @@ set(Eigen3_DIR "${USER_HOME_DIRECTORY}/projects/libs/eigen-3.4.0/cmake")
 include(FetchContent)
 
 FetchContent_Declare(
-        # Объявляем, что хотим "скачать" GoogleTest
+        # Объявляем, что хотим "скачать" GoogleTest (вместе с GoogleMock)
         googletest
         GIT_REPOSITORY https://github.com/google/googletest.git
         GIT_TAG        v1.14.0 # Укажите нужную версию Google Test
 )
+# NB. Библиотека будет скачана в локальную build директорию самой CMake
+# Обычно это <project_dir>/cmake-build-debug/_deps/googletest-src
 
 # Чтобы избежать повторной загрузки, делаем так:
 FetchContent_GetProperties(googletest)
 if(NOT googletest_POPULATED)
     FetchContent_Populate(googletest)
     # ВНИМАНИЕ! Следующую команду нужно использовать с любой версией, а не только для версий ниже v1.14!!!
-    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+    # Тут лежат заголовочные файлы и бинарники Google Test/Mock
+    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR} ${googlemock_SOURCE_DIR} ${googlemock_BINARY_DIR})
 endif()
 
 # Включаем поддержку тестов в CMake
@@ -53,7 +56,8 @@ add_library(cpp-gtest-data-provider STATIC
 )
 
 # Линкуем gtest_main, чтобы не создавать функцию main для каждого тестового файла
-target_link_libraries(cpp-gtest-data-provider PUBLIC GTest::gtest)
+# NB. Без GTest::gmock невозможно будет подключать gmock.h в хедеры, только в .cpp!!!
+target_link_libraries(cpp-gtest-data-provider PUBLIC GTest::gtest GTest::gmock)
 
 # Добавляем поддиректорию test, в которой нужно обработать свой файл CMakeLists.txt
 add_subdirectory(tests)

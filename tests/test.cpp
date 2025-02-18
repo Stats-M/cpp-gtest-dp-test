@@ -1,9 +1,12 @@
-#include <gtest/gtest.h>
 #include "test.h"
 
+// Переехало в test.h
+//#include <gtest/gtest.h>
+//#include <gmock/gmock.h>
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Пример теста для функции, принимающей vector<int> в качестве аргумента:
-// связка class (фиксация типа) + TEST_P + INSTANTIATE_TEST_SUITE_P
+// Пример теста для функции, принимающей vector<int> в качестве аргумента.
+// Связка class (фиксация типа) + TEST_P + INSTANTIATE_TEST_SUITE_P
 // РЕАЛИЗАЦИЯ: DataProvider + параметризованный тест (*_P)
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -40,8 +43,8 @@ INSTANTIATE_TEST_SUITE_P(
 
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Пример теста для функции, принимающей скаляр double в качестве аргумента:
-// связка class (фиксация типа) + TEST_P + INSTANTIATE_TEST_SUITE_P
+// Пример теста для функции, принимающей скаляр double в качестве аргумента.
+// Связка class (фиксация типа) + TEST_P + INSTANTIATE_TEST_SUITE_P
 // РЕАЛИЗАЦИЯ: DataProvider + параметризованный тест (*_P)
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -78,8 +81,8 @@ INSTANTIATE_TEST_SUITE_P(
 
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Пример теста для функции, принимающей скаляр double в качестве аргумента:
-// связка class (фиксация типа) + TEST_P + INSTANTIATE_TEST_SUITE_P
+// Пример теста для функции, принимающей скаляр double в качестве аргумента.
+// Связка class (фиксация типа) + TEST_P + INSTANTIATE_TEST_SUITE_P
 // РЕАЛИЗАЦИЯ: DataProvider + НЕпараметризованный тест
 // Недостаток: данные из DP передаются в test_cases все и сразу
 // Достоинства: простота реализации
@@ -87,12 +90,46 @@ INSTANTIATE_TEST_SUITE_P(
 
 // Непараметризованый тест
 TEST(CalculationTest, ScalarPow2) {
-    auto test_cases = DataProvider_GetCube::get_test_cases();
+    auto test_cases = DataProvider_GetPow2::get_test_cases();
 
     for (const auto& data : test_cases)
     {
-        double result = get_cube(data.arg);
+        double result = get_pow_2(data.arg);
         ASSERT_NEAR(result, data.expected_result, 1e-6) << "Test Case: " << data.test_name;
+    }
+}
+
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Пример теста для функции, принимающей скаляр double в качестве аргумента.
+// Связка шаблонных функции + DataProvider + тестовый класс + параметризованый тест (TYPED_TEST)
+// РЕАЛИЗАЦИЯ: DataProvider + параметризованный тест
+// Недостаток: данные из DP передаются в test_cases все и сразу
+// Достоинства: шаблонный DP, разные наборы данных для разных типов
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Определяем типы данных для тестов, используя Type Definitions.
+using MultiplyBy2Types = ::testing::Types<int, double>;
+// Т.к. тестовый класс сейчас шаблонный, он определен в test.h
+TYPED_TEST_SUITE(TestMultiplyBy2, MultiplyBy2Types);
+
+// Параметризованный по типам тест
+TYPED_TEST(TestMultiplyBy2, VectorMultiplyByTwo)
+{
+    // To refer to typedefs in the fixture, add the 'typename TestFixture::'
+    // prefix.  The 'typename' is required to satisfy the compiler.
+    using T = typename TestFixture::ParamType;
+    // Или: using ParamType = typename TestFixture::ParamType;
+
+    // Получаем все наборы данных разом. Эмуляция получения по одному набору за раз слишком переусложнена.
+    std::vector<TestDatasetBothVectors<T>> test_cases = DataProvider_MultiplyBy2<T>::get_test_cases();
+
+    for (const TestDatasetBothVectors<T>& data : test_cases)
+    {
+        std::vector<T> result = multiply_by_two(data.args);
+
+        // Кастомная функция поэлементного сравнения через ASSERT_EQ
+        AssertVectorsAreEqual<T>(data.expected_result, result);
     }
 }
 
@@ -102,7 +139,7 @@ TEST(CalculationTest, ScalarPow2) {
 // Классические unit-тесты с генерацией тестовых кейсов на лету
 // РЕАЛИЗАЦИЯ: Локальные наборы тестовых данных
 // Недостаток: не используется DP
-// Достоинства: простейшая реализации
+// Достоинства: самая простая реализации
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Stand-alone тесты проверки базовой функциональности. Не связаны с DataProvider
@@ -122,4 +159,34 @@ TEST(StandAloneTestsSuite, BasicTest_03) {
 TEST(StandAloneTestsSuite, BasicTest_04) {
     double arg {0};
     ASSERT_NEAR(get_cube(arg), 0, 1e-6);
+}
+TEST(StandAloneTestsSuite, VectorTest_01)
+{
+    std::vector<double> expected{1.0, -4.0, 3.0, 0.5};
+    std::vector<double> actual{1.0, 20.0, 55.0, 0.5};
+    ASSERT_NE(actual, expected);
+}
+TEST(StandAloneTestsSuite, VectorTest_02)
+{
+    std::vector<double> expected{1.0, -4.0, 3.0, 0.5};
+    std::vector<double> actual{2.0, -4.0, 3.0, 0.5};
+    ASSERT_GT(actual, expected);
+}
+TEST(StandAloneTestsSuite, VectorTest_03Fail)
+{
+    std::vector<double> expected{1.0, -4.0, 3.0, 0.5};
+    std::vector<double> actual{0.0, -4.0, 3.0, 0.5};
+    ASSERT_GT(actual, expected);
+}
+
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Пример работы макросов из библиотеки Google Mock. Используется для
+// выполнения более сложных проверок контейнеров.
+// Недостаток: отдельный макрос, совместимость с другими тестами под вопросом
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+TEST(VectorTest, AreEqualUsingMatchers) {
+    std::vector<int> expected {10, 20, 30, 5 };
+    std::vector<int> actual {10, 20, 30, 5 };
+    ASSERT_THAT(actual, ::testing::ContainerEq(expected));
 }
