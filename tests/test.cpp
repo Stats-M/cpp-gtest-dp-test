@@ -101,20 +101,20 @@ TEST(CalculationTest, ScalarPow2) {
 
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Пример теста для функции, принимающей скаляр double в качестве аргумента.
+// Пример шаблонного теста для функции типа vector, принимающей const vector в качестве аргумента.
 // Связка шаблонных функции + DataProvider + тестовый класс + параметризованый тест (TYPED_TEST)
 // РЕАЛИЗАЦИЯ: DataProvider + параметризованный тест
-// Недостаток: данные из DP передаются в test_cases все и сразу
+// Недостаток: данные из DP передаются в test_cases все и сразу, const-вектор, return копия
 // Достоинства: шаблонный DP, разные наборы данных для разных типов
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Определяем типы данных для тестов, используя Type Definitions.
-using MultiplyBy2Types = ::testing::Types<int, double>;
+using IntDoubleTypes = ::testing::Types<int, double>;
 // Т.к. тестовый класс сейчас шаблонный, он определен в test.h
-TYPED_TEST_SUITE(TestMultiplyBy2, MultiplyBy2Types);
+TYPED_TEST_SUITE(TestMultiplyBy2, IntDoubleTypes);
 
 // Параметризованный по типам тест
-TYPED_TEST(TestMultiplyBy2, VectorMultiplyByTwo)
+TYPED_TEST(TestMultiplyBy2, ConstVectorMultiplyByTwo)
 {
     // To refer to typedefs in the fixture, add the 'typename TestFixture::'
     // prefix.  The 'typename' is required to satisfy the compiler.
@@ -129,7 +129,40 @@ TYPED_TEST(TestMultiplyBy2, VectorMultiplyByTwo)
         std::vector<T> result = multiply_by_two(data.args);
 
         // Кастомная функция поэлементного сравнения через ASSERT_EQ
-        AssertVectorsAreEqual<T>(data.expected_result, result);
+        AssertVectorsAreEqual<T>(data.expected_result, result, data.test_name);
+    }
+}
+
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Пример шаблонного теста для void-функции, принимающей не-const ссылку на вектор в качестве аргумента.
+// Связка шаблонных функции + DataProvider + тестовый класс + параметризованый тест (TYPED_TEST)
+// РЕАЛИЗАЦИЯ: DataProvider + параметризованный тест
+// Недостаток: данные из DP передаются в test_cases все и сразу, const-ограничения макроса остаются
+// Достоинства: шаблонный DP, разные наборы данных для разных типов, для не-const аргументов
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Определяем типы данных для тестов, используя Type Definitions.
+//using IntDoubleTypes = ::testing::Types<int, double>;             // <- Переиспользуем тип из предыдущего теста
+// Т.к. тестовый класс сейчас шаблонный, он определен в test.h
+TYPED_TEST_SUITE(TestMultiplyBy2, IntDoubleTypes);                  // <- Переиспользуем тип из предыдущего теста
+
+// Параметризованный по типам тест
+TYPED_TEST(TestMultiplyBy2, VectorMultiplyByTwoByRef) {
+    // To refer to typedefs in the fixture, add the 'typename TestFixture::'
+    // prefix.  The 'typename' is required to satisfy the compiler.
+    using T = typename TestFixture::ParamType;
+    // Или: using ParamType = typename TestFixture::ParamType;
+
+    // Получаем все наборы данных разом. Эмуляция получения по одному набору за раз слишком переусложнена.
+    auto test_cases = DataProvider_MultiplyBy2<T>::get_test_cases();
+
+    for (const auto& data : test_cases) {
+        std::vector<T> input_copy = data.args;  // Создаем копию входного вектора, т.к. нельзя обойти const-ограничение макроса
+        multiply_by_two_void(input_copy);    // Вызываем функцию для изменения копии
+
+        // Сравниваем измененную копию с ожидаемым результатом
+        AssertVectorsAreEqual(data.expected_result, input_copy, data.test_name);
     }
 }
 

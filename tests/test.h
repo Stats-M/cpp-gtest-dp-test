@@ -9,8 +9,9 @@
 #include <string>
 #include <vector>
 
-// Фиксируем тип шаблонной функции, которую тестируем
-double get_sum(std::vector<int> args);
+// Специализация шаблонной функции из cube.h, которую тестируем
+// Не используем template <> для специализации шаблона в заголовочном файле, только в .cpp
+int get_sum(std::vector<int> args);
 
 // Обычная функция, которую тестируем. Уже объявлена в cube.h
 //double get_cube(double arg);
@@ -40,9 +41,12 @@ public:
  * @tparam T тип данных вектора
  * @param expected ссылка на вектор с ожидаемыми данными
  * @param actual ссылка на сравниваемый вектор
+ * @param test_name строка с названием набора данных, использовавшаяся в тесте. Пробрасывается из вызывающего
+ *                  метода, т.к. AssertVectorsAreEqual() вызывается тестом напрямую без макросов ASSERT_*,
+ *                  которые поддерживают прямую конкатенацию строк через <<
  */
 template <typename T>
-void AssertVectorsAreEqual(const std::vector<T>& expected, const std::vector<T>& actual)
+void AssertVectorsAreEqual(const std::vector<T>& expected, const std::vector<T>& actual, const std::string& test_name = "")
 {
     // Если обе ссылки ведут на один и тот же вектор, векторы равны
     if (&expected == &actual)
@@ -51,11 +55,11 @@ void AssertVectorsAreEqual(const std::vector<T>& expected, const std::vector<T>&
     }
 
     // Сначала проверяем размеры
-    ASSERT_EQ(expected.size(), actual.size()) << "Vectors have different sizes";
+    ASSERT_EQ(expected.size(), actual.size()) << "Vectors have different sizes. Test Case: " << test_name;
 
     // Сравниваем поэлементно, т.к. при таком подходе можно будет узнать индекс различающихся элементов
     for (size_t i = 0; i < expected.size(); ++i)
     {
-        ASSERT_EQ(expected[i], actual[i]) << "Elements at index " << i << " are different";
+        ASSERT_EQ(expected[i], actual[i]) << "Elements at index " << i << " are different. Test Case: " << test_name;
     }
 }

@@ -36,9 +36,9 @@ double get_pow_2(double arg = 0.0);
 
 /**
 * Пример шаблонной функции для умножения каждого элемента вектора на 2
-* @tparam T Тип параметра функции (std::is_arithmetic_v<T>)
-* @param v Входящий вектор
-* @return Результирующий вектор
+* @tparam T Тип параметра и результата функции (std::is_arithmetic_v<T>)
+* @param v Входящий вектор (const)
+* @return Результирующий вектор (копия)
 */
 template <typename T> requires (std::is_arithmetic_v<T>)
 std::vector<T>  multiply_by_two(const std::vector<T>& v)
@@ -53,4 +53,21 @@ std::vector<T>  multiply_by_two(const std::vector<T>& v)
     }
 
     return result;
+}
+
+/**
+* Пример шаблонной функции для умножения каждого элемента вектора на 2.
+* Операции производятся непосредственно над вектором, переданным в качестве аргумента
+* @tparam T Тип параметра функции (std::is_arithmetic_v<T>)
+* @param v Входящий вектор
+*/
+template <typename T> requires (std::is_arithmetic_v<T>)
+void multiply_by_two_void(std::vector<T>& v)
+{
+    T multiplier = static_cast<T>(2);
+
+    for (T& element : v)
+    {
+        element *= multiplier;
+    }
 }
